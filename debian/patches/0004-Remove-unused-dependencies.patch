@@ -1,0 +1,36 @@
+From: Jon Barber <jongit@bhnb.co.uk>
+Date: Mon, 7 Mar 2016 23:46:16 +0000
+Subject: Remove unused dependencies.
+
+No need to link against libssl.
+---
+ ftp/Makefile.am  | 2 +-
+ http/Makefile.am | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/ftp/Makefile.am b/ftp/Makefile.am
+index 78ebbfe..cb51307 100755
+--- a/ftp/Makefile.am
++++ b/ftp/Makefile.am
+@@ -30,7 +30,7 @@ wviewftpd_SOURCES  = \
+ 
+ 
+ # define libraries
+-wviewftpd_LDADD   = -lssl -lcurl
++wviewftpd_LDADD   = -lcurl
+ 
+ # define library directories
+ wviewftpd_LDFLAGS = -L$(prefix)/lib -L/usr/lib
+diff --git a/http/Makefile.am b/http/Makefile.am
+index 9b3ece6..7c46017 100755
+--- a/http/Makefile.am
++++ b/http/Makefile.am
+@@ -35,7 +35,7 @@ wvhttpd_SOURCES  = \
+ 
+ 
+ # define libraries
+-wvhttpd_LDADD     = -lssl -lcurl
++wvhttpd_LDADD     = -lcurl
+ 
+ # define library directories
+ wvhttpd_LDFLAGS   = -L$(prefix)/lib -L/usr/lib

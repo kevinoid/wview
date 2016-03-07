@@ -1,0 +1,165 @@
+From: Jon Barber <jongit@bhnb.co.uk>
+Date: Mon, 7 Mar 2016 22:01:28 +0000
+Subject: Avoid unnecessary linking of external libraries.
+
+When a library is found, the default behaviour of AC_CHECK_LIB is
+to prepend that library to LIBS.  This change overrides that and adds
+dependencies only where they are required.
+
+This should make it eaiser, for example, to deploy a lightweight
+data-collecion system.
+
+For example, this is the output from 'ldd wviewd_vpro' without the
+extra libraries:
+	linux-vdso.so.1 (0x00007fff04b2b000)
+	librad.so.0 => /usr/lib/librad.so.0 (0x00007f1d71d5b000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f1d71a5a000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f1d716b0000)
+	libsqlite3.so.0 => /usr/lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007f1d713e7000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f1d711ca000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f1d71f8e000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f1d70fc5000)
+
+and with:
+	linux-vdso.so.1 (0x00007ffe17fe2000)
+	libz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f32791df000)
+	libcurl.so.4 => /usr/lib/x86_64-linux-gnu/libcurl.so.4 (0x00007f3278f6b000)
+	librad.so.0 => /usr/lib/librad.so.0 (0x00007f3278d44000)
+	libpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f3278b27000)
+	libsqlite3.so.0 => /usr/lib/x86_64-linux-gnu/libsqlite3.so.0 (0x00007f327885e000)
+	libpng12.so.0 => /lib/x86_64-linux-gnu/libpng12.so.0 (0x00007f3278636000)
+	libm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f3278335000)
+	libgd.so.3 => /usr/lib/x86_64-linux-gnu/libgd.so.3 (0x00007f32780c8000)
+	libc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f3277d1e000)
+	libidn.so.11 => /usr/lib/x86_64-linux-gnu/libidn.so.11 (0x00007f3277aea000)
+	librtmp.so.1 => /usr/lib/x86_64-linux-gnu/librtmp.so.1 (0x00007f32778cc000)
+	libssh2.so.1 => /usr/lib/x86_64-linux-gnu/libssh2.so.1 (0x00007f32776a2000)
+	libssl.so.1.0.0 => /usr/lib/x86_64-linux-gnu/libssl.so.1.0.0 (0x00007f3277442000)
+	libcrypto.so.1.0.0 => /usr/lib/x86_64-linux-gnu/libcrypto.so.1.0.0 (0x00007f3277047000)
+	libgssapi_krb5.so.2 => /usr/lib/x86_64-linux-gnu/libgssapi_krb5.so.2 (0x00007f3276dfb000)
+	libkrb5.so.3 => /usr/lib/x86_64-linux-gnu/libkrb5.so.3 (0x00007f3276b27000)
+	libk5crypto.so.3 => /usr/lib/x86_64-linux-gnu/libk5crypto.so.3 (0x00007f32768f6000)
+	libcom_err.so.2 => /lib/x86_64-linux-gnu/libcom_err.so.2 (0x00007f32766f1000)
+	liblber-2.4.so.2 => /usr/lib/x86_64-linux-gnu/liblber-2.4.so.2 (0x00007f32764e2000)
+	libldap_r-2.4.so.2 => /usr/lib/x86_64-linux-gnu/libldap_r-2.4.so.2 (0x00007f3276290000)
+	/lib64/ld-linux-x86-64.so.2 (0x00007f3279407000)
+	libdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f327608b000)
+	libjpeg.so.62 => /usr/lib/x86_64-linux-gnu/libjpeg.so.62 (0x00007f3275e34000)
+	libfreetype.so.6 => /usr/lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007f3275b89000)
+	libfontconfig.so.1 => /usr/lib/x86_64-linux-gnu/libfontconfig.so.1 (0x00007f327594c000)
+	libXpm.so.4 => /usr/lib/x86_64-linux-gnu/libXpm.so.4 (0x00007f327573a000)
+	libX11.so.6 => /usr/lib/x86_64-linux-gnu/libX11.so.6 (0x00007f32753f7000)
+	libvpx.so.1 => /usr/lib/x86_64-linux-gnu/libvpx.so.1 (0x00007f3274ffe000)
+	libtiff.so.5 => /usr/lib/x86_64-linux-gnu/libtiff.so.5 (0x00007f3274d89000)
+	libgnutls-deb0.so.28 => /usr/lib/x86_64-linux-gnu/libgnutls-deb0.so.28 (0x00007f3274a6a000)
+	libhogweed.so.2 => /usr/lib/x86_64-linux-gnu/libhogweed.so.2 (0x00007f327483a000)
+	libnettle.so.4 => /usr/lib/x86_64-linux-gnu/libnettle.so.4 (0x00007f3274608000)
+	libgmp.so.10 => /usr/lib/x86_64-linux-gnu/libgmp.so.10 (0x00007f3274385000)
+	libgcrypt.so.20 => /lib/x86_64-linux-gnu/libgcrypt.so.20 (0x00007f32740a2000)
+	libkrb5support.so.0 => /usr/lib/x86_64-linux-gnu/libkrb5support.so.0 (0x00007f3273e96000)
+	libkeyutils.so.1 => /lib/x86_64-linux-gnu/libkeyutils.so.1 (0x00007f3273c92000)
+	libresolv.so.2 => /lib/x86_64-linux-gnu/libresolv.so.2 (0x00007f3273a7a000)
+	libsasl2.so.2 => /usr/lib/x86_64-linux-gnu/libsasl2.so.2 (0x00007f327385e000)
+	libexpat.so.1 => /lib/x86_64-linux-gnu/libexpat.so.1 (0x00007f3273634000)
+	libxcb.so.1 => /usr/lib/x86_64-linux-gnu/libxcb.so.1 (0x00007f3273412000)
+	liblzma.so.5 => /lib/x86_64-linux-gnu/liblzma.so.5 (0x00007f32731ef000)
+	libjbig.so.0 => /usr/lib/x86_64-linux-gnu/libjbig.so.0 (0x00007f3272fdf000)
+	libp11-kit.so.0 => /usr/lib/x86_64-linux-gnu/libp11-kit.so.0 (0x00007f3272d99000)
+	libtasn1.so.6 => /usr/lib/x86_64-linux-gnu/libtasn1.so.6 (0x00007f3272b85000)
+	libgpg-error.so.0 => /lib/x86_64-linux-gnu/libgpg-error.so.0 (0x00007f3272972000)
+	libXau.so.6 => /usr/lib/x86_64-linux-gnu/libXau.so.6 (0x00007f327276e000)
+	libXdmcp.so.6 => /usr/lib/x86_64-linux-gnu/libXdmcp.so.6 (0x00007f3272568000)
+	libffi.so.6 => /usr/lib/x86_64-linux-gnu/libffi.so.6 (0x00007f3272360000
+---
+ configure.in                | 14 +++++++-------
+ htmlgenerator/Makefile.am   |  2 +-
+ stations/TE923/Makefile.am  |  4 ++--
+ stations/WH1080/Makefile.am |  4 ++--
+ stations/WMRUSB/Makefile.am |  4 ++--
+ 5 files changed, 14 insertions(+), 14 deletions(-)
+
+diff --git a/configure.in b/configure.in
+index 51134d9..70fb723 100755
+--- a/configure.in
++++ b/configure.in
+@@ -59,15 +59,15 @@ AM_CONDITIONAL([FREEBSD], [test x$os_freebsd = xyes])
+ 
+ 
+ # Checks for libraries.
+-AC_CHECK_LIB([c], [strncpy], [], [echo "libc is missing!";exit -1])
+-AC_CHECK_LIB([gd], [gdImageCreate], [], [echo "libgd is missing!";exit -1])
++AC_CHECK_LIB([c], [strncpy], [true], [echo "libc is missing!";exit -1])
++AC_CHECK_LIB([gd], [gdImageCreate], [true], [echo "libgd is missing!";exit -1])
+ AC_CHECK_LIB([m], [exp], [], [echo "libm is missing!";exit -1])
+-AC_CHECK_LIB([png], [png_write_chunk], [], [echo "libpng is missing!";exit -1])
+-AC_CHECK_LIB([sqlite3], [sqlite3_open], [], [echo "libsqlite3 is missing!";exit -1])
+-AC_CHECK_LIB([pthread], [pthread_create], [], [echo "libpthread is missing!";exit -1])
++AC_CHECK_LIB([png], [png_write_chunk], [true], [echo "libpng is missing!";exit -1])
++AC_CHECK_LIB([sqlite3], [sqlite3_open], [true], [echo "libsqlite3 is missing!";exit -1])
++AC_CHECK_LIB([pthread], [pthread_create], [true], [echo "libpthread is missing!";exit -1])
+ AC_CHECK_LIB([rad], [radthreadLock], [], [echo "librad is missing or old version!";exit -1])
+-AC_CHECK_LIB([curl], [curl_easy_init], [], [echo "libcurl is missing!";exit -1])
+-AC_CHECK_LIB([z], [inflate], [], [echo "libz is missing!";exit -1])
++AC_CHECK_LIB([curl], [curl_easy_init], [true], [echo "libcurl is missing!";exit -1])
++AC_CHECK_LIB([z], [inflate], [true], [echo "libz is missing!";exit -1])
+ 
+ # Checks for header files.
+ AC_HEADER_STDC
+diff --git a/htmlgenerator/Makefile.am b/htmlgenerator/Makefile.am
+index 800aab4..79afa5c 100755
+--- a/htmlgenerator/Makefile.am
++++ b/htmlgenerator/Makefile.am
+@@ -63,7 +63,7 @@ htmlgend_SOURCES   = \
+ 
+ 
+ # define libraries
+-htmlgend_LDADD   =
++htmlgend_LDADD   = -lgd
+ 
+ # define library directories
+ htmlgend_LDFLAGS = -L$(prefix)/lib -L/usr/lib
+diff --git a/stations/TE923/Makefile.am b/stations/TE923/Makefile.am
+index e5ceee7..b0b20ac 100755
+--- a/stations/TE923/Makefile.am
++++ b/stations/TE923/Makefile.am
+@@ -59,8 +59,8 @@ else
+ wviewd_te923_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_te923_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_te923_LDADD		= -lusb
++wviewd_te923_LDADD		= -lusb -lpthread
+ else
+-wviewd_te923_LDADD		= -lusb-1.0 -ludev
++wviewd_te923_LDADD		= -lusb-1.0 -ludev -lpthread
+ endif
+ endif
+diff --git a/stations/WH1080/Makefile.am b/stations/WH1080/Makefile.am
+index 60b1380..7fb2338 100755
+--- a/stations/WH1080/Makefile.am
++++ b/stations/WH1080/Makefile.am
+@@ -59,8 +59,8 @@ else
+ wviewd_wh1080_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_wh1080_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_wh1080_LDADD		= -lusb
++wviewd_wh1080_LDADD		= -lusb -lpthread
+ else
+-wviewd_wh1080_LDADD		= -lusb-1.0 -ludev
++wviewd_wh1080_LDADD		= -lusb-1.0 -ludev -lpthread
+ endif
+ endif
+diff --git a/stations/WMRUSB/Makefile.am b/stations/WMRUSB/Makefile.am
+index 00cf3fb..f28e986 100755
+--- a/stations/WMRUSB/Makefile.am
++++ b/stations/WMRUSB/Makefile.am
+@@ -58,8 +58,8 @@ else
+ wviewd_wmrusb_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_wmrusb_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_wmrusb_LDADD		= -lusb
++wviewd_wmrusb_LDADD		= -lusb -lpthread
+ else
+-wviewd_wmrusb_LDADD		= -lusb-1.0 -ludev
++wviewd_wmrusb_LDADD		= -lusb-1.0 -ludev -lpthread
+ endif
+ endif

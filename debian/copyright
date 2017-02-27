@@ -13,5 +13,6 @@ License: GPL-2
 
 Files: debian/*
 Copyright: 2009 Mark Teel <mteel2005@gmail.com>
+           2017 Kevin Locke <kevin@kevinlocke.name>
 License: GPL-3
  Licensed under GPL version 3, see `/usr/share/common-licenses/GPL-3'.

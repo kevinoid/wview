@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# add to the shared library search path
-export LD_LIBRARY_PATH=/lib:/usr/local/lib:/usr/lib
 CONF_DIRECTORY=/etc/wview
 RUN_DIRECTORY=/var/lib/wview
 WVIEW_INSTALL_DIR=/usr/bin

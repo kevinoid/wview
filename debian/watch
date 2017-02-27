@@ -1,0 +1,3 @@
+# Control file for uscan(1)
+version=4
+http://sf.net/wview/ wview-(.*)\.tar\.gz debian uupdate

@@ -109,12 +109,6 @@ case "$1" in
 
 #       Always rewrite the version file:
         cp -f /usr/share/wview/etc/wview/wview-version /etc/wview
-
-#       Copy our logrotate configuration file if logrotate is installed:
-        if [ -e /etc/logrotate.d ]; then
-            cp -fp /usr/share/wview/etc/logrotate.d/wview-logrotate /etc/logrotate.d/wview
-            echo "You may want to restart logrotate so wview rotate settings will take effect."
-        fi
     ;;
 
     abort-upgrade|abort-remove|abort-deconfigure|deconfigure)

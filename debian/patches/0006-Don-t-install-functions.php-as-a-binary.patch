@@ -1,0 +1,47 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Mon, 27 Feb 2017 01:51:44 -0700
+Subject: Don't install functions.php as a binary
+
+Adding functions.php to bin_SCRIPTS causes it to be installed as an
+executable script in /usr/bin.  functions.php is a generated PHP file
+and not an executable that can/should be invoked.  Change bin_SCRIPTS to
+noinst_DATA, and don't link to the copy in /usr/bin.
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ Makefile.am           | 3 ---
+ wviewmgmt/Makefile.am | 6 +++---
+ 2 files changed, 3 insertions(+), 6 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index fda7e8b..6c08389 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -201,9 +201,6 @@ endif
+ 	@mkdir -p $(DESTDIR)$(WV_HTML_DIR)/wviewmgmt/imgs
+ 	@cp -fp $(top_srcdir)/wviewmgmt/*.* $(DESTDIR)$(WV_HTML_DIR)/wviewmgmt
+ 	@cp -fp $(top_srcdir)/wviewmgmt/imgs/*.* $(DESTDIR)$(WV_HTML_DIR)/wviewmgmt/imgs
+-	@if [ ! -e $(DESTDIR)$(WV_HTML_DIR)/wviewmgmt/functions.php ]; then \
+-		$(LN_S) $(DESTDIR)$(WV_BIN_DIR)/functions.php $(DESTDIR)$(WV_HTML_DIR)/wviewmgmt/functions.php; \
+-	fi
+ 
+ uninstall-hook:
+ 	rm -rf $(DESTDIR)$(WV_RUN_DIR)
+diff --git a/wviewmgmt/Makefile.am b/wviewmgmt/Makefile.am
+index d6f25e2..594d852 100644
+--- a/wviewmgmt/Makefile.am
++++ b/wviewmgmt/Makefile.am
+@@ -59,10 +59,10 @@ EXTRA_DIST = \
+ 	$(srcdir)/imgs/red.png
+ 
+ 
+-# define the scripts to be generated
+-bin_SCRIPTS = functions.php
++# Generated files.  Marked noinst since it is installed by root Makefile.am
++noinst_DATA = functions.php
+ 
+-CLEANFILES = $(bin_SCRIPTS)
++CLEANFILES = $(noinst_DATA)
+ 
+ functions.php: $(srcdir)/functions.php.sh
+ 	echo "<?php" > functions.php

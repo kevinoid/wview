@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 CONF_DIRECTORY=/etc/wview
 RUN_DIRECTORY=/var/lib/wview

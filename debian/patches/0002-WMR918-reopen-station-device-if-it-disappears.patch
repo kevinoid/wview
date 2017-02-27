@@ -1,0 +1,48 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Sun, 26 Feb 2017 20:23:10 -0700
+Subject: WMR918: reopen station device if it disappears
+
+If the station disconnects (e.g. due to power failure) reads will return
+ENOENT indefinitely.  When this happens, reopen the device (restart the
+medium).
+
+This patch is not as elegant as I would like in terms of code (e.g. the
+goto, which was clearer than loop/break used as goto) and in terms of
+API (readStationData doesn't preserve errno or propagate the error cause
+by another mechanism, so it has to be handled here).  But it works for
+me and that's all I need for now.
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ stations/WMR918/wmr918protocol.c | 12 +++++++++++-
+ 1 file changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/stations/WMR918/wmr918protocol.c b/stations/WMR918/wmr918protocol.c
+index 7c2844b..c95055d 100755
+--- a/stations/WMR918/wmr918protocol.c
++++ b/stations/WMR918/wmr918protocol.c
+@@ -78,13 +78,23 @@ static int readStationData( WVIEWD_WORK* work )
+     WMR918_IF_DATA*     ifWorkData = ( WMR918_IF_DATA* )work->stationData;
+     uint8_t*             pPacket = &wmr918Work.readData[2];
+ 
++begin_reading:
+     // read the first three bytes -- 0xff, 0xff, <type>
+     retVal = ( *work->medium.read )( &work->medium, &wmr918Work.readData[0], 3, WMR918_READ_TIMEOUT );
+     if( retVal != 3 )
+     {
++        int readerrno = errno;
+         radMsgLog( PRI_MEDIUM, "readStationData: read header failed: %s",
+-                   strerror( errno ) );
++                   strerror( readerrno ) );
+         emailAlertSend( ALERT_TYPE_STATION_READ );
++
++        // If the file went away since the last read, restart it
++        if( readerrno == ENOENT && *work->medium.restart != NULL )
++        {
++            ( *work->medium.restart )( &work->medium );
++            goto begin_reading;
++        }
++
+         return ERROR;
+     }
+ 

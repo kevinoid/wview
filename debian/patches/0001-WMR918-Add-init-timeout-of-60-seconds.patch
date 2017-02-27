@@ -1,0 +1,79 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Sun, 26 Feb 2017 20:09:06 -0700
+Subject: WMR918: Add init timeout of 60 seconds
+
+If one of the sensors is not connected, proceed with initialization
+after a timeout (currently 60 seconds).  The timeout is not ideal, but
+due to variability of packet type frequency, there is no clear reliable
+alternative.
+
+This condition occurs intentionally when sensors are unused (e.g. RAIN
+in snow climates) or unintentionally (e.g. due to malfunction).  In
+either case, I think it's better better to gather some data with
+user-obvious defects than no data with logged status messages
+indefinitely.  When proposed, the upstream author contended that users
+must ensure all sensors are functioning for wview to work, so this patch
+is unlikely to be merged.
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+Bug: http://www.wviewweather.com/mantis/view.php?id=126
+---
+ stations/WMR918/wmr918protocol.c | 18 +++++++++++++++---
+ stations/WMR918/wmr918protocol.h |  1 +
+ 2 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/stations/WMR918/wmr918protocol.c b/stations/WMR918/wmr918protocol.c
+index eaa7a47..7c2844b 100755
+--- a/stations/WMR918/wmr918protocol.c
++++ b/stations/WMR918/wmr918protocol.c
+@@ -552,7 +552,9 @@ int wmr918Init( WVIEWD_WORK* work )
+     fd_set              rfds;
+     struct timeval      tv;
+     int                 i, length, retVal;
+-    time_t              nowTime = time( NULL ) - ( WV_SECONDS_IN_HOUR / ( 60 / WMR918_RAIN_RATE_PERIOD ) );
++    time_t              nowTime = time( NULL );
++    time_t              initMaxTime = nowTime + WMR918_INIT_TIMEOUT;
++    time_t              rainTime = nowTime - ( WV_SECONDS_IN_HOUR / ( 60 / WMR918_RAIN_RATE_PERIOD ) );
+     ARCHIVE_PKT         recordStore;
+     char                outString[128];
+ 
+@@ -563,7 +565,7 @@ int wmr918Init( WVIEWD_WORK* work )
+     ifWorkData->rainRateAccumulator = sensorAccumInit( WMR918_RAIN_RATE_PERIOD );
+ 
+     // Populate the accumulator with the last WMR918_RAIN_RATE_PERIOD minutes:
+-    while( ( nowTime = dbsqliteArchiveGetNextRecord( nowTime, &recordStore ) ) != ERROR )
++    while( ( rainTime = dbsqliteArchiveGetNextRecord( rainTime, &recordStore ) ) != ERROR )
+     {
+         sensorAccumAddSample( ifWorkData->rainRateAccumulator,
+                               recordStore.dateTime,
+@@ -583,7 +585,17 @@ int wmr918Init( WVIEWD_WORK* work )
+                 length += sprintf( &outString[length], "%s ", WMRSensorNames[i] );
+             }
+         }
+-        radMsgLog( PRI_MEDIUM, "wmr918Init: waiting for sensors: %s", outString );
++
++        // Check if timeout elapsed
++        if( time( NULL ) > initMaxTime )
++        {
++            radMsgLog( PRI_MEDIUM, "wmr918Init: init timeout, proceeding without sensors: %s", outString );
++            break;
++        }
++        else
++        {
++            radMsgLog( PRI_MEDIUM, "wmr918Init: waiting for sensors: %s", outString );
++        }
+ 
+         tv.tv_sec  = 2;
+         tv.tv_usec = 0;
+diff --git a/stations/WMR918/wmr918protocol.h b/stations/WMR918/wmr918protocol.h
+index 610bda9..138b9f6 100755
+--- a/stations/WMR918/wmr918protocol.h
++++ b/stations/WMR918/wmr918protocol.h
+@@ -52,6 +52,7 @@
+ #define WMR918_MAX_RETRIES             5
+ #define WMR918_BUFFER_LENGTH           16
+ #define WMR918_READ_TIMEOUT            500
++#define WMR918_INIT_TIMEOUT            60
+ 
+ // Define the rain rate acuumulator period (minutes):
+ #define WMR918_RAIN_RATE_PERIOD         5

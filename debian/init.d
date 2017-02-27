@@ -5,8 +5,8 @@ RUN_DIRECTORY=/var/lib/wview
 WVIEW_INSTALL_DIR=/usr/bin
 ### BEGIN INIT INFO
 # Provides:          wview
-# Required-Start:    $local_fs $network $time $syslog
-# Required-Stop:     $local_fs $network $time $syslog
+# Required-Start:    $remote_fs $network $time $syslog
+# Required-Stop:     $remote_fs $network $time $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
 # Short-Description: Start wview daemons at boot time

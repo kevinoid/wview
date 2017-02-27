@@ -54,7 +54,7 @@ case "$1" in
             mkdir -p /var/lib/wview/archive
             cp -fp /usr/share/wview/var/wview/img/*.* /var/lib/wview/img
             cp -fp /usr/share/wview/var/wview/archive/* /var/lib/wview/archive
-            /usr/bin/sqlite3 /var/lib/wview/archive/wview-archive.sdb '.read /var/lib/wview/archive/wview-archive.sql'
+            sqlite3 /var/lib/wview/archive/wview-archive.sdb '.read /var/lib/wview/archive/wview-archive.sql'
             echo "==> /var/lib/wview has been created with distro examples"
         else
             echo "==> /var/lib/wview already exists - skipping default data installation"
@@ -93,7 +93,7 @@ case "$1" in
             cp -fp /usr/share/wview/etc/wview/html/exfoliation/standard/*.* /etc/wview/html/exfoliation/standard
             cp -fp /usr/share/wview/etc/wview/alarms/*.* /etc/wview/alarms
             cp -fp /usr/share/wview/etc/wview/html/chrome/standard/awekas_wl.htx-us /etc/wview/html/awekas_wl.htx
-            /usr/bin/sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf.sql-deb-pkg'
+            sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf.sql-deb-pkg'
             echo "==> /etc/wview has been created with distro examples"
             echo ""
             echo "This is a first time install so the station type will be set to \"simulator\"."
@@ -120,7 +120,7 @@ case "$1" in
         else
             echo "==> /etc/wview/wview-conf.sdb already exists - skipping default configuration installation"
             cp -fp /usr/share/wview/etc/wview/wview-conf-update.sql /etc/wview
-            /usr/bin/sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf-update.sql'
+            sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf-update.sql'
         fi
 
         echo ""

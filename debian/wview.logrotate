@@ -1,6 +1,7 @@
 /var/log/wview.log {
     weekly
     compress
+    delaycompress
     rotate 4
     missingok
     notifempty

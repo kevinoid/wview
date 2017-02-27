@@ -142,32 +142,6 @@ case "$1" in
 #       Always rewrite the version file:
         cp -f /usr/share/wview/etc/wview/wview-version /etc/wview
 
-#       Create a few handy links (hard to know what the document root is for the http server):
-        if [ -e /var/www ]; then
-            if [ ! -e /var/www/wviewmgmt ]; then
-                ln -s /var/lib/wviewmgmt /var/www/wviewmgmt
-            fi
-            if [ ! -e /var/www/weather ]; then
-                ln -s /var/lib/wview/img /var/www/weather
-            fi
-        fi
-        if [ -e /srv ]; then
-            if [ ! -e /srv/wviewmgmt ]; then
-                ln -s /var/lib/wviewmgmt /srv/wviewmgmt
-            fi
-            if [ ! -e /srv/weather ]; then
-                ln -s /var/lib/wview/img /srv/weather
-            fi
-        fi
-        if [ -e /usr/local/www ]; then
-            if [ ! -e /usr/local/www/wviewmgmt ]; then
-                ln -s /var/lib/wviewmgmt /usr/local/www/wviewmgmt
-            fi
-            if [ ! -e /usr/local/www/weather ]; then
-                ln -s /var/lib/wview/img /usr/local/www/weather
-            fi
-        fi
-
 #       Copy our rsyslog configuration file if rsyslog is installed:
         if [ -e /etc/rsyslog.d ]; then
             get_rsyslog_info

@@ -88,6 +88,7 @@ binary-common:
 #	dh_installpam
 #	dh_installmime
 #	dh_python
+	dh_apache2
 	dh_installinit --update-rcd-params="defaults 99 10"
 #	dh_installcron
 #	dh_installinfo

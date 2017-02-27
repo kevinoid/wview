@@ -16,6 +16,9 @@ WVIEW_INSTALL_DIR=/usr/bin
 # pidfiles:          $prefix/var/wview/*.pid
 ################################################################################
 
+# Get lsb functions
+. /lib/lsb/init-functions
+
 if [ -f $CONF_DIRECTORY/wview-user ]; then
   WVIEW_USER=`cat $CONF_DIRECTORY/wview-user`
 fi

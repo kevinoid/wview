@@ -3,7 +3,7 @@ Section: net
 Priority: extra
 Maintainer: Mark Teel <mteel2005@gmail.com>
 Build-Depends: debhelper (>= 10), autotools-dev, dh-apache2, radlib-dev (>= 2.12), libgd2-noxpm-dev, libssl-dev, libcurl4-openssl-dev, sqlite3, libusb-1.0-0-dev, libudev-dev
-Standards-Version: 3.8.3
+Standards-Version: 3.9.8
 Homepage: http://www.wviewweather.com
 Vcs-Browser: https://gitlab.com/kevinoid/wview
 Vcs-Git: https://gitlab.com/kevinoid/wview.git

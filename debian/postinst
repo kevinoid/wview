@@ -20,7 +20,12 @@ set -e
 case "$1" in
     configure)
         if [ ! -d /var/lib/wview ]; then
-            mkdir -p /var/lib/wview
+            wview_user=wview
+            adduser --system --group --quiet --home /var/lib/wview "$wview_user"
+            # TODO: When using debconf, add to group which owns STATION_DEV
+            # as necessary on configuration change.
+            # For now, add to dialout for USB & serial devices.
+            usermod -a -G dialout "$wview_user"
             mkdir -p /var/lib/wview/noaa
             mkdir -p /var/lib/wview/alarms
             mkdir -p /var/lib/wview/img
@@ -30,14 +35,17 @@ case "$1" in
             cp -fp /usr/share/wview/var/wview/img/*.* /var/lib/wview/img
             cp -fp /usr/share/wview/var/wview/archive/* /var/lib/wview/archive
             sqlite3 /var/lib/wview/archive/wview-archive.sdb '.read /var/lib/wview/archive/wview-archive.sql'
+            chown -R wview:wview /var/lib/wview
+            chmod -R ug+rwX /var/lib/wview
             echo "==> /var/lib/wview has been created with distro examples"
         else
             echo "==> /var/lib/wview already exists - skipping default data installation"
+            echo "    creating wview user and changing file permissions"
         fi
+
         if [ ! -e /etc/wview/wview-conf.sdb ]; then
             mkdir -p /etc/wview
             mkdir -p /etc/wview/export
-            chmod 777 /etc/wview/export
             mkdir -p /etc/wview/html
             mkdir -p /etc/wview/html/chrome
             mkdir -p /etc/wview/html/chrome/plus
@@ -69,6 +77,14 @@ case "$1" in
             cp -fp /usr/share/wview/etc/wview/alarms/*.* /etc/wview/alarms
             cp -fp /usr/share/wview/etc/wview/html/chrome/standard/awekas_wl.htx-us /etc/wview/html/awekas_wl.htx
             sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf.sql-deb-pkg'
+
+            if [ -n "${wview_user-}" ]; then
+                chgrp -R "$wview_user" /etc/wview
+                chmod -R g+w /etc/wview
+            fi
+
+            chmod 1777 /etc/wview/export
+
             echo "==> /etc/wview has been created with distro examples"
             echo ""
             echo "This is a first time install so the station type will be set to \"simulator\"."
@@ -84,10 +100,12 @@ case "$1" in
             echo "#> sudo apache2ctl restart"
             echo "so the PHP5-sqlite module gets loaded - this will never be required again."
             echo ""
-            echo "If you want start/stop control of wview from the Management Web Site"
-            echo "(and you are comfortable giving the http server user account sudo privileges):"
-            echo "Grant the www-data user permission to control wview:"
-            echo "# cp /usr/share/doc/wview/examples/wviewmgmt.sudoers /etc/sudoers.d/wviewmgmt"
+            echo "If you want to configure wview from the Management Web Site, and you are "
+	    echo "comfortable giving the http server user account sudo privileges, add www-data"
+            echo "to group wview:"
+            echo " # adduser www-data wview"
+	    echo "and grant the www-data user permission to control wview:"
+            echo " # cp /usr/share/doc/wview/examples/wviewmgmt.sudoers /etc/sudoers.d/wviewmgmt"
             echo ""
         else
             echo "==> /etc/wview/wview-conf.sdb already exists - skipping default configuration installation"
@@ -95,14 +113,16 @@ case "$1" in
             sqlite3 /etc/wview/wview-conf.sdb '.read /etc/wview/wview-conf-update.sql'
         fi
 
+        if [ ! -e /etc/wview/wview-user ] && [ -n "${wview_user-}" ]; then
+            # Note: /etc/wview/wview-user should only be root-writable
+            # otherwise wview could escalate to root by changing/removing it.
+            echo "$wview_user" > /etc/wview/wview-user
+        fi
+
         echo ""
         echo "To start/stop wview:"
         echo "\"#> sudo /etc/init.d/wview start|stop\""
         echo ""
-
-        chmod 666 /etc/wview/wview-binary
-        chmod 666 /etc/wview/wview-conf.sdb
-        chmod 777 /etc/wview
 
 #       Always rewrite the version file:
         cp -f /usr/share/wview/etc/wview/wview-version /etc/wview

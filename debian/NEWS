@@ -1,0 +1,25 @@
+wview (5.21.7-1local1) UNRELEASED; urgency=low
+
+  This version introduces several notable changes that apply to new
+  installations of this package:
+  * This package now creates the wview system user in postinst and runs all
+    daemons as this user instead of root.
+  * Files in /var/lib/wview and /etc/wview are owned by wview.
+  * Files in /etc/wview are only writable by wview, with the exception of
+    /etc/wview/export which is world-writable and sticky, and
+    /etc/wview/wview-user which is only root-writable.
+
+  No attempt is made to change the users or permissions of existing files due
+  to the wide possible variations of configuration.  To update an existing
+  default installation, the following commands should be sufficient:
+
+      adduser --system --group --home /var/lib/wview wview
+      chown -R wview:wview /var/lib/wview
+      chmod -R ug+rwX /var/lib/wview
+      chgrp -R wview /etc/wview
+      chmod -R g+rwX,o-w /etc/wview
+      chmod 1777 /etc/wview/export
+      # Note: /etc/wview/wview-user should only be root-writable
+      echo wview > /etc/wview/wview-user
+
+ -- Kevin Locke <kevin@kevinlocke.name>  Mon, 27 Feb 2017 20:25:40 -0700

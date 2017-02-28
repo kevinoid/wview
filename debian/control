@@ -10,7 +10,7 @@ Vcs-Git: https://gitlab.com/kevinoid/wview.git
 
 Package: wview
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, radlib-dev (>= 2.12), sqlite3, gawk, rsync, libcurl3, libusb-1.0-0, lsb-base (>= 3.0-6)
+Depends: ${shlibs:Depends}, ${misc:Depends}, radlib-dev (>= 2.12), sqlite3, gawk, rsync, libcurl3, libusb-1.0-0, adduser, lsb-base (>= 3.0-6)
 Recommends: apache2 | httpd, php5-sqlite
 Description: unix weather application that generates web sites
  wview is a collection of linux/unix daemons which interface with a supported 

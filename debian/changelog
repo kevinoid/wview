@@ -240,7 +240,7 @@ wview (5.10.1-1) unstable; urgency=low
 
 wview (5.8.0-1) unstable; urgency=low
 
-* Initial release
+  * Initial release
 
  -- Mark Teel <mteel2005@gmail.com>  Sun, 06 Dec 2009 09:55:57 -0600
 

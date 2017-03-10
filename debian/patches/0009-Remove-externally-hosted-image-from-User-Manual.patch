@@ -1,0 +1,34 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Fri, 10 Mar 2017 15:12:51 -0700
+Subject: Remove externally-hosted image from User Manual
+
+The Lintian privacy-breach-generic warning points out that the user
+manual references an image on a remote server and that this has privacy
+and security implications.  Since the image is non-essential and is not
+included in the source package, remove it.
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ wview-User-Manual.html | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/wview-User-Manual.html b/wview-User-Manual.html
+index 86ed28e..f85cd24 100644
+--- a/wview-User-Manual.html
++++ b/wview-User-Manual.html
+@@ -18,15 +18,6 @@
+ 
+ <body>
+ 
+-  <!-- wview Image -->
+-  <div style="text-align: center;">
+-    <a href="http://www.wviewweather.com"> 
+-      <img src="http://www.wviewweather.com/wview-200x200.png" alt="wview Logo"
+-	   border="0">
+-    </a>
+-  </div>
+-
+-
+   <h1>
+ 
+     <a name="title"><strong>&nbsp;wview User Manual&nbsp;&nbsp;&nbsp;&nbsp;

@@ -6,3 +6,4 @@
 0006-Don-t-install-functions.php-as-a-binary.patch
 0007-Don-t-install-files-in-debian-dir-from-Makefile.patch
 0008-Remove-unnecessary-libusb-linkage.patch
+0009-Remove-externally-hosted-image-from-User-Manual.patch

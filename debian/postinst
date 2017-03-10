@@ -128,11 +128,6 @@ case "$1" in
         echo "\"#> sudo /etc/init.d/wview start|stop\""
         echo ""
 
-        if [ -e /var/lib/wviewmgmt/functions.php ]; then
-            rm -f /var/lib/wviewmgmt/functions.php
-        fi
-        ln -s /usr/bin/functions.php /var/lib/wviewmgmt/functions.php
-
         chmod 666 /etc/wview/wview-binary
         chmod 666 /etc/wview/wview-conf.sdb
         chmod 777 /etc/wview

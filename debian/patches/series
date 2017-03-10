@@ -5,3 +5,4 @@
 0005-Set-correct-execute-permission-on-files.patch
 0006-Don-t-install-functions.php-as-a-binary.patch
 0007-Don-t-install-files-in-debian-dir-from-Makefile.patch
+0008-Remove-unnecessary-libusb-linkage.patch

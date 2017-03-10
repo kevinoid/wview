@@ -1,0 +1,102 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Fri, 10 Mar 2017 14:43:33 -0700
+Subject: Remove unnecessary libusb linkage
+
+libusb.h is never included and no libusb symbols are used.  Avoid
+linking avoid linking to the library unnecessarily.
+
+This also fixes the following warning:
+
+dpkg-shlibdeps: warning: package could avoid a useless dependency if debian/wview/usr/bin/wviewd_wmrusb debian/wview/usr/bin/wviewd_te923 debian/wview/usr/bin/wviewd_wh1080 were not linked against libusb-1.0.so.0 (they use none of the library's symbols)
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ scripts/wview-install-debian | 1 -
+ stations/TE923/Makefile.am   | 4 ++--
+ stations/WH1080/Makefile.am  | 4 ++--
+ stations/WMRUSB/Makefile.am  | 4 ++--
+ wview-User-Manual.html       | 7 -------
+ 5 files changed, 6 insertions(+), 14 deletions(-)
+
+diff --git a/scripts/wview-install-debian b/scripts/wview-install-debian
+index 5e6c6d1..d542c3f 100644
+--- a/scripts/wview-install-debian
++++ b/scripts/wview-install-debian
+@@ -72,7 +72,6 @@ apt-get install --yes libsqlite3-dev sqlite3
+ apt-get install --yes libgd2-noxpm-dev libssl-dev
+ apt-get install --yes sendmail sendemail
+ apt-get install --yes libcurl4-openssl-dev
+-apt-get install --yes libusb-1.0-0-dev
+ 
+ echo ""
+ echo "---------------------------------------------------------------------------" 
+diff --git a/stations/TE923/Makefile.am b/stations/TE923/Makefile.am
+index b0b20ac..c0f54e5 100644
+--- a/stations/TE923/Makefile.am
++++ b/stations/TE923/Makefile.am
+@@ -59,8 +59,8 @@ else
+ wviewd_te923_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_te923_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_te923_LDADD		= -lusb -lpthread
++wviewd_te923_LDADD		= -lpthread
+ else
+-wviewd_te923_LDADD		= -lusb-1.0 -ludev -lpthread
++wviewd_te923_LDADD		= -ludev -lpthread
+ endif
+ endif
+diff --git a/stations/WH1080/Makefile.am b/stations/WH1080/Makefile.am
+index 7fb2338..a0b087f 100644
+--- a/stations/WH1080/Makefile.am
++++ b/stations/WH1080/Makefile.am
+@@ -59,8 +59,8 @@ else
+ wviewd_wh1080_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_wh1080_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_wh1080_LDADD		= -lusb -lpthread
++wviewd_wh1080_LDADD		= -lpthread
+ else
+-wviewd_wh1080_LDADD		= -lusb-1.0 -ludev -lpthread
++wviewd_wh1080_LDADD		= -ludev -lpthread
+ endif
+ endif
+diff --git a/stations/WMRUSB/Makefile.am b/stations/WMRUSB/Makefile.am
+index f28e986..f024c18 100644
+--- a/stations/WMRUSB/Makefile.am
++++ b/stations/WMRUSB/Makefile.am
+@@ -58,8 +58,8 @@ else
+ wviewd_wmrusb_SOURCES	+= $(top_srcdir)/stations/common/hidapi-linux.c
+ wviewd_wmrusb_LDFLAGS	= -L$(prefix)/lib -L/usr/lib -L/usr/local/lib
+ if FREEBSD
+-wviewd_wmrusb_LDADD		= -lusb -lpthread
++wviewd_wmrusb_LDADD		= -lpthread
+ else
+-wviewd_wmrusb_LDADD		= -lusb-1.0 -ludev -lpthread
++wviewd_wmrusb_LDADD		= -ludev -lpthread
+ endif
+ endif
+diff --git a/wview-User-Manual.html b/wview-User-Manual.html
+index 1a39647..86ed28e 100644
+--- a/wview-User-Manual.html
++++ b/wview-User-Manual.html
+@@ -1100,12 +1100,6 @@
+             <b><font color="#0044ff">http://www.boutell.com/gd</font></b></a>
+         </li>
+         <li>
+-          <strong>libusb-1.0-0-dev</strong> - USB interface library - may require installation -
+-          <a href="http://www.libusb.org/">
+-
+-            <b><font color="#0044ff">http://www.libusb.org/</font></b></a>
+-        </li>
+-        <li>
+           <strong>radlib</strong> - rapid application development library - 
+           must be installed with SQLite support (--enable-sqlite) -
+           <a href="http://www.radlib.teel.ws">
+@@ -1390,7 +1384,6 @@
+ 
+       libreadline5<br>
+       libsqlite<br>
+-      libusb<br>
+       librad<br>
+       wview<br>
+     </p>

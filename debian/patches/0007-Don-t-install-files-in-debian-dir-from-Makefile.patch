@@ -1,0 +1,28 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Fri, 10 Mar 2017 13:32:17 -0700
+Subject: Don't install files in debian dir from Makefile
+
+Let debian/rules deal with the files in the debian directory, since
+there is more handy tooling and conventions for doing it.  (e.g.
+dh_installlogrotate for the logrotate script).
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ Makefile.am | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/Makefile.am b/Makefile.am
+index 6c08389..ec72993 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -75,10 +75,6 @@ if INSTALL_DPKG
+ 	mkdir -p $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/html/exfoliation/static
+ 	mkdir -p $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/html/exfoliation/standard
+ 	mkdir -p $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/alarms
+-	mkdir -p $(DESTDIR)$(WV_SHARE_DIR)/etc/rsyslog.d
+-	mkdir -p $(DESTDIR)$(WV_SHARE_DIR)/etc/logrotate.d
+-	cp -fp $(top_srcdir)/debian/99-wview.conf $(DESTDIR)$(WV_SHARE_DIR)/etc/rsyslog.d
+-	cp -fp $(top_srcdir)/debian/wview-logrotate $(DESTDIR)$(WV_SHARE_DIR)/etc/logrotate.d
+ 	@echo "$(PACKAGE_VERSION)" > $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/wview-version
+ 	cp -fp $(top_srcdir)/examples/html/*.* $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/html
+ 	cp -fp $(top_srcdir)/examples/html/chrome/plus/*.* $(DESTDIR)$(WV_SHARE_DIR)/etc/wview/html/chrome/plus

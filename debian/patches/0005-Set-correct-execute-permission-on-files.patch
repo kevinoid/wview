@@ -1,0 +1,1198 @@
+From: Kevin Locke <kevin@kevinlocke.name>
+Date: Fri, 10 Mar 2017 11:16:49 -0700
+Subject: Set correct execute permission on files
+
+Giving execute permission to files which can not be executed is
+misleading, risks security issues (e.g. if the data can be changed and
+something tricked in to executing it), and causes the Lintian
+executable-not-elf-or-script and script-not-executable warnings.  Fix
+these by marking executable files (binaries and scripts with a shebang)
+as executable and all other files as non-executable.
+
+Note:  Skip files with spaces in name due to quilt failing to apply the
+exported patch.
+
+Signed-off-by: Kevin Locke <kevin@kevinlocke.name>
+---
+ AUTHORS                                                     |   0
+ ChangeLog                                                   |   0
+ Makefile.am                                                 |   0
+ README                                                      |   0
+ TODO                                                        |   0
+ UPGRADE                                                     |   0
+ alarms/Makefile.am                                          |   0
+ alarms/sample-datafeed-client/datafeedClient.c              |   0
+ bin/img/Clouds.jpg                                          | Bin
+ bin/img/above-clouds.jpg                                    | Bin
+ common/beaufort.h                                           |   0
+ common/datadefs.h                                           |   0
+ common/datafeed.c                                           |   0
+ common/datafeed.h                                           |   0
+ common/dbsqlite.c                                           |   0
+ common/dbsqlite.h                                           |   0
+ common/dbsqliteHiLow.c                                      |   0
+ common/dbsqliteHistory.c                                    |   0
+ common/dbsqliteNOAA.c                                       |   0
+ common/emailAlerts.c                                        |   0
+ common/lunarCycle.c                                         |   0
+ common/sensor.c                                             |   0
+ common/sensor.h                                             |   0
+ common/services.h                                           |   0
+ common/status.c                                             |   0
+ common/sysdefs.h                                            |   0
+ common/windAverage.c                                        |   0
+ common/wvutils.c                                            |   0
+ configure.in                                                |   0
+ cwop/Makefile.am                                            |   0
+ cwop/cwop.c                                                 |   0
+ dbexport/Makefile.am                                        |   0
+ examples/Debian/Makefile.am                                 |   0
+ examples/FedoraCore/Makefile.am                             |   0
+ examples/FedoraCore/wview.sh                                |   0
+ examples/FreeBSD/Makefile.am                                |   0
+ examples/FreeBSD/wview.sh                                   |   0
+ examples/MacOSX/wview/Makefile.am                           |   0
+ examples/MacOSX/wview/wview.sh                              |   0
+ examples/Makefile.am                                        |   0
+ examples/NSLU2/Makefile.am                                  |   0
+ examples/NSLU2/wview.sh                                     |   0
+ examples/SuSE/Makefile.am                                   |   0
+ examples/SuSE/wview.sh                                      |   0
+ examples/alarms/outtempMaxEmail.sh                          |   0
+ examples/html/chrome/plus/images-metric.conf                |   0
+ examples/html/chrome/plus/images.conf                       |   0
+ examples/html/chrome/standard/images-metric.conf            |   0
+ examples/html/chrome/standard/images.conf                   |   0
+ examples/html/chrome/static/Clouds-blue.jpg                 | Bin
+ examples/html/chrome/static/Clouds.jpg                      | Bin
+ examples/html/chrome/static/above-clouds.jpg                | Bin
+ examples/html/chrome/static/fc-icon-cloudy.gif              | Bin
+ examples/html/chrome/static/fc-icon-partlycloudy.gif        | Bin
+ examples/html/chrome/static/fc-icon-partlycloudyandrain.gif | Bin
+ examples/html/chrome/static/fc-icon-partlycloudyandsnow.gif | Bin
+ examples/html/chrome/static/fc-icon-rain.gif                | Bin
+ examples/html/chrome/static/fc-icon-snow.gif                | Bin
+ examples/html/chrome/static/fc-icon-snowandrain.gif         | Bin
+ examples/html/chrome/static/fc-icon-sunny.gif               | Bin
+ examples/html/classic/plus/images-metric.conf               |   0
+ examples/html/classic/plus/images.conf                      |   0
+ examples/html/classic/standard/images-metric.conf           |   0
+ examples/html/classic/standard/images.conf                  |   0
+ examples/html/classic/static/Clouds-blue.jpg                | Bin
+ examples/html/classic/static/Clouds.jpg                     | Bin
+ examples/html/classic/static/above-clouds.jpg               | Bin
+ examples/html/classic/static/fc-icon-cloudy.gif             | Bin
+ examples/html/classic/static/fc-icon-partlycloudy.gif       | Bin
+ .../html/classic/static/fc-icon-partlycloudyandrain.gif     | Bin
+ .../html/classic/static/fc-icon-partlycloudyandsnow.gif     | Bin
+ examples/html/classic/static/fc-icon-rain.gif               | Bin
+ examples/html/classic/static/fc-icon-snow.gif               | Bin
+ examples/html/classic/static/fc-icon-snowandrain.gif        | Bin
+ examples/html/classic/static/fc-icon-sunny.gif              | Bin
+ examples/html/exfoliation/plus/images-metric.conf           |   0
+ examples/html/exfoliation/plus/images.conf                  |   0
+ examples/html/exfoliation/plus/post-generate.sh             |   0
+ examples/html/exfoliation/standard/images-metric.conf       |   0
+ examples/html/exfoliation/standard/images.conf              |   0
+ examples/html/exfoliation/standard/post-generate.sh         |   0
+ examples/html/parameterlist.txt                             |   0
+ examples/scripts/rainInLastWeek.sh                          |   0
+ examples/scripts/wview-ftp.sh                               |   0
+ ftp/Makefile.am                                             |   0
+ ftp/ftp.c                                                   |   0
+ ftp/ftpUtils.h                                              |   0
+ ftp/wviewftp.debug.sh                                       |   0
+ htmlgenerator/Makefile.am                                   |   0
+ htmlgenerator/glchart.c                                     |   0
+ htmlgenerator/html.c                                        |   0
+ htmlgenerator/html.h                                        |   0
+ htmlgenerator/htmlGenerate.c                                |   0
+ htmlgenerator/htmlGenerate.h                                |   0
+ htmlgenerator/htmlMgr.c                                     |   0
+ htmlgenerator/htmlMgr.h                                     |   0
+ htmlgenerator/htmlStates.c                                  |   0
+ htmlgenerator/images-user.c                                 |   0
+ htmlgenerator/images.c                                      |   0
+ http/Makefile.am                                            |   0
+ http/http.c                                                 |   0
+ procmon/Makefile.am                                         |   0
+ procmon/procmon.c                                           |   0
+ procmon/procmonStates.c                                     |   0
+ ssh/Makefile.am                                             |   0
+ ssh/ssh.c                                                   |   0
+ stations/Makefile.am                                        |   0
+ stations/Simulator/Makefile.am                              |   0
+ stations/Simulator/simulator.c                              |   0
+ stations/Simulator/simulator.h                              |   0
+ stations/TE923/Makefile.am                                  |   0
+ stations/TE923/te923Interface.c                             |   0
+ stations/TE923/te923Interface.h                             |   0
+ stations/TE923/te923Protocol.c                              |   0
+ stations/TE923/te923Protocol.h                              |   0
+ stations/TWI/Makefile.am                                    |   0
+ stations/TWI/twiConfig.c                                    |   0
+ stations/TWI/twiInterface.c                                 |   0
+ stations/TWI/twiInterface.h                                 |   0
+ stations/TWI/twiProtocol.c                                  |   0
+ stations/TWI/twiProtocol.h                                  |   0
+ stations/VantagePro/Makefile.am                             |   0
+ stations/VantagePro/dbfiles.c                               |   0
+ stations/VantagePro/dbfiles.h                               |   0
+ stations/VantagePro/vpconfig/Makefile.am                    |   0
+ stations/VantagePro/vpconfig/vpconfig.c                     |   0
+ stations/VantagePro/vpconfig/vpinstall.sh                   |   0
+ stations/VantagePro/vproInterface.c                         |   0
+ stations/VantagePro/vproStates.c                            |   0
+ stations/Virtual/Makefile.am                                |   0
+ stations/Virtual/virtualInterface.c                         |   0
+ stations/Virtual/virtualInterface.h                         |   0
+ stations/Virtual/virtualProtocol.c                          |   0
+ stations/Virtual/virtualProtocol.h                          |   0
+ stations/WH1080/Makefile.am                                 |   0
+ stations/WH1080/wh1080Interface.c                           |   0
+ stations/WH1080/wh1080Interface.h                           |   0
+ stations/WH1080/wh1080Protocol.c                            |   0
+ stations/WH1080/wh1080Protocol.h                            |   0
+ stations/WMR918/Makefile.am                                 |   0
+ stations/WMR918/wmr918Interface.c                           |   0
+ stations/WMR918/wmr918Interface.h                           |   0
+ stations/WMR918/wmr918protocol.c                            |   0
+ stations/WMR918/wmr918protocol.h                            |   0
+ stations/WMRUSB/Makefile.am                                 |   0
+ stations/WMRUSB/wmrusbinterface.c                           |   0
+ stations/WMRUSB/wmrusbinterface.h                           |   0
+ stations/WMRUSB/wmrusbprotocol.c                            |   0
+ stations/WMRUSB/wmrusbprotocol.h                            |   0
+ stations/WS-2300/Makefile.am                                |   0
+ stations/WS-2300/ws2300Interface.c                          |   0
+ stations/WS-2300/ws2300Interface.h                          |   0
+ stations/WS-2300/ws2300protocol.c                           |   0
+ stations/WS-2300/ws2300protocol.h                           |   0
+ stations/WXT510/Makefile.am                                 |   0
+ stations/WXT510/nmea0183.c                                  |   0
+ stations/WXT510/nmea0183.h                                  |   0
+ stations/WXT510/wxt510Interface.c                           |   0
+ stations/WXT510/wxt510Interface.h                           |   0
+ stations/WXT510/wxt510config/Makefile.am                    |   0
+ stations/WXT510/wxt510config/wxt510config.c                 |   0
+ stations/common/computedData.c                              |   0
+ stations/common/daemon.c                                    |   0
+ stations/common/daemon.h                                    |   0
+ stations/common/ethernet.c                                  |   0
+ stations/common/ethernet.h                                  |   0
+ stations/common/hidapi-linux.c                              |   0
+ stations/common/hidapi-osx.c                                |   0
+ stations/common/hidapi.h                                    |   0
+ stations/common/parser.c                                    |   0
+ stations/common/serial.c                                    |   0
+ stations/common/station.c                                   |   0
+ stations/common/station.h                                   |   0
+ stations/common/stormRain.c                                 |   0
+ stations/common/usbhid.c                                    |   0
+ utilities/Makefile.am                                       |   0
+ utilities/archive-be2le/Makefile.am                         |   0
+ utilities/archive-be2le/arc_be2le.c                         |   0
+ utilities/archive-le2be/Makefile.am                         |   0
+ utilities/archive-le2be/arc_le2be.c                         |   0
+ utilities/hilowcreate/Makefile.am                           |   0
+ utilities/hilowcreate/hilowcreate.c                         |   0
+ utilities/sqlite2wlk/Makefile.am                            |   0
+ utilities/sqlite2wlk/sqlite2wlk.c                           |   0
+ utilities/wlk2sqlite/Makefile.am                            |   0
+ utilities/wlk2sqlite/wlk2sqlite.c                           |   0
+ utilities/wvutilities.c                                     |   0
+ wview-Debian-Quick-Start.html                               |   0
+ wview-Quick-Start-FreeBSD.html                              |   0
+ wview-Quick-Start-MacOSX.html                               |   0
+ wview-Quick-Start.html                                      |   0
+ wview-User-Manual.html                                      |   0
+ wviewconfig/Makefile.am                                     |   0
+ wviewmgmt/Makefile.am                                       |   0
+ wviewmgmt/imgs/black.png                                    | Bin
+ wviewmgmt/imgs/blue.png                                     | Bin
+ wviewmgmt/imgs/calendar.png                                 | Bin
+ wviewmgmt/imgs/email.png                                    | Bin
+ wviewmgmt/imgs/gray.png                                     | Bin
+ wviewmgmt/imgs/green.png                                    | Bin
+ wviewmgmt/imgs/phone.png                                    | Bin
+ wviewmgmt/imgs/red.png                                      | Bin
+ wviewmgmt/imgs/tip_small.png                                | Bin
+ wviewmgmt/imgs/yellow.png                                   | Bin
+ wviewmgmt/login.php                                         |   0
+ wviewmgmt/logout.php                                        |   0
+ wviewmgmt/network_update.php                                |   0
+ wviewmgmt/password_protect.php                              |   0
+ wviewmgmt/password_update.php                               |   0
+ wviewmgmt/preload_alarms.php                                |   0
+ wviewmgmt/preload_calibration.php                           |   0
+ wviewmgmt/preload_cwop.php                                  |   0
+ wviewmgmt/preload_file_generation.php                       |   0
+ wviewmgmt/preload_ftp.php                                   |   0
+ wviewmgmt/preload_http_services.php                         |   0
+ wviewmgmt/preload_services.php                              |   0
+ wviewmgmt/preload_sql_export.php                            |   0
+ wviewmgmt/preload_ssh.php                                   |   0
+ wviewmgmt/preload_station.php                               |   0
+ wviewmgmt/preload_system_status.php                         |   0
+ wviewmgmt/process_alarms.php                                |   0
+ wviewmgmt/process_calibration.php                           |   0
+ wviewmgmt/process_cwop.php                                  |   0
+ wviewmgmt/process_file_generation.php                       |   0
+ wviewmgmt/process_ftp.php                                   |   0
+ wviewmgmt/process_http_services.php                         |   0
+ wviewmgmt/process_services.php                              |   0
+ wviewmgmt/process_sql_export.php                            |   0
+ wviewmgmt/process_ssh.php                                   |   0
+ wviewmgmt/process_station.php                               |   0
+ wviewmgmt/style.css                                         |   0
+ wviewmgmt/wview-100x100.png                                 | Bin
+ wviewmgmt/wview-40x40.png                                   | Bin
+ wviewmgmt/wview.ico                                         | Bin
+ wviewmgmt/wview_control.php                                 |   0
+ wviewmgmt/wview_upgrade.php                                 |   0
+ 236 files changed, 0 insertions(+), 0 deletions(-)
+ mode change 100755 => 100644 AUTHORS
+ mode change 100755 => 100644 ChangeLog
+ mode change 100755 => 100644 Makefile.am
+ mode change 100755 => 100644 README
+ mode change 100755 => 100644 TODO
+ mode change 100755 => 100644 UPGRADE
+ mode change 100755 => 100644 alarms/Makefile.am
+ mode change 100755 => 100644 alarms/sample-datafeed-client/datafeedClient.c
+ mode change 100755 => 100644 bin/img/Clouds.jpg
+ mode change 100755 => 100644 bin/img/above-clouds.jpg
+ mode change 100755 => 100644 common/beaufort.h
+ mode change 100755 => 100644 common/datadefs.h
+ mode change 100755 => 100644 common/datafeed.c
+ mode change 100755 => 100644 common/datafeed.h
+ mode change 100755 => 100644 common/dbsqlite.c
+ mode change 100755 => 100644 common/dbsqlite.h
+ mode change 100755 => 100644 common/dbsqliteHiLow.c
+ mode change 100755 => 100644 common/dbsqliteHistory.c
+ mode change 100755 => 100644 common/dbsqliteNOAA.c
+ mode change 100755 => 100644 common/emailAlerts.c
+ mode change 100755 => 100644 common/lunarCycle.c
+ mode change 100755 => 100644 common/sensor.c
+ mode change 100755 => 100644 common/sensor.h
+ mode change 100755 => 100644 common/services.h
+ mode change 100755 => 100644 common/status.c
+ mode change 100755 => 100644 common/sysdefs.h
+ mode change 100755 => 100644 common/windAverage.c
+ mode change 100755 => 100644 common/wvutils.c
+ mode change 100755 => 100644 configure.in
+ mode change 100755 => 100644 cwop/Makefile.am
+ mode change 100755 => 100644 cwop/cwop.c
+ mode change 100755 => 100644 dbexport/Makefile.am
+ mode change 100755 => 100644 examples/Debian/Makefile.am
+ mode change 100755 => 100644 examples/FedoraCore/Makefile.am
+ mode change 100755 => 100644 examples/FedoraCore/wview.sh
+ mode change 100755 => 100644 examples/FreeBSD/Makefile.am
+ mode change 100755 => 100644 examples/FreeBSD/wview.sh
+ mode change 100755 => 100644 examples/MacOSX/wview/Makefile.am
+ mode change 100755 => 100644 examples/MacOSX/wview/wview.sh
+ mode change 100755 => 100644 examples/Makefile.am
+ mode change 100755 => 100644 examples/NSLU2/Makefile.am
+ mode change 100755 => 100644 examples/NSLU2/wview.sh
+ mode change 100755 => 100644 examples/SuSE/Makefile.am
+ mode change 100755 => 100644 examples/SuSE/wview.sh
+ mode change 100644 => 100755 examples/alarms/outtempMaxEmail.sh
+ mode change 100755 => 100644 examples/html/chrome/plus/images-metric.conf
+ mode change 100755 => 100644 examples/html/chrome/plus/images.conf
+ mode change 100755 => 100644 examples/html/chrome/standard/images-metric.conf
+ mode change 100755 => 100644 examples/html/chrome/standard/images.conf
+ mode change 100755 => 100644 examples/html/chrome/static/Clouds-blue.jpg
+ mode change 100755 => 100644 examples/html/chrome/static/Clouds.jpg
+ mode change 100755 => 100644 examples/html/chrome/static/above-clouds.jpg
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-cloudy.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-partlycloudy.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-partlycloudyandrain.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-partlycloudyandsnow.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-rain.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-snow.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-snowandrain.gif
+ mode change 100755 => 100644 examples/html/chrome/static/fc-icon-sunny.gif
+ mode change 100755 => 100644 examples/html/classic/plus/images-metric.conf
+ mode change 100755 => 100644 examples/html/classic/plus/images.conf
+ mode change 100755 => 100644 examples/html/classic/standard/images-metric.conf
+ mode change 100755 => 100644 examples/html/classic/standard/images.conf
+ mode change 100755 => 100644 examples/html/classic/static/Clouds-blue.jpg
+ mode change 100755 => 100644 examples/html/classic/static/Clouds.jpg
+ mode change 100755 => 100644 examples/html/classic/static/above-clouds.jpg
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-cloudy.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-partlycloudy.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-partlycloudyandrain.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-partlycloudyandsnow.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-rain.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-snow.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-snowandrain.gif
+ mode change 100755 => 100644 examples/html/classic/static/fc-icon-sunny.gif
+ mode change 100755 => 100644 examples/html/exfoliation/plus/images-metric.conf
+ mode change 100755 => 100644 examples/html/exfoliation/plus/images.conf
+ mode change 100755 => 100644 examples/html/exfoliation/plus/post-generate.sh
+ mode change 100755 => 100644 examples/html/exfoliation/standard/images-metric.conf
+ mode change 100755 => 100644 examples/html/exfoliation/standard/images.conf
+ mode change 100755 => 100644 examples/html/exfoliation/standard/post-generate.sh
+ mode change 100755 => 100644 examples/html/parameterlist.txt
+ mode change 100644 => 100755 examples/scripts/rainInLastWeek.sh
+ mode change 100644 => 100755 examples/scripts/wview-ftp.sh
+ mode change 100755 => 100644 ftp/Makefile.am
+ mode change 100755 => 100644 ftp/ftp.c
+ mode change 100755 => 100644 ftp/ftpUtils.h
+ mode change 100644 => 100755 ftp/wviewftp.debug.sh
+ mode change 100755 => 100644 htmlgenerator/Makefile.am
+ mode change 100755 => 100644 htmlgenerator/glchart.c
+ mode change 100755 => 100644 htmlgenerator/html.c
+ mode change 100755 => 100644 htmlgenerator/html.h
+ mode change 100755 => 100644 htmlgenerator/htmlGenerate.c
+ mode change 100755 => 100644 htmlgenerator/htmlGenerate.h
+ mode change 100755 => 100644 htmlgenerator/htmlMgr.c
+ mode change 100755 => 100644 htmlgenerator/htmlMgr.h
+ mode change 100755 => 100644 htmlgenerator/htmlStates.c
+ mode change 100755 => 100644 htmlgenerator/images-user.c
+ mode change 100755 => 100644 htmlgenerator/images.c
+ mode change 100755 => 100644 http/Makefile.am
+ mode change 100755 => 100644 http/http.c
+ mode change 100755 => 100644 procmon/Makefile.am
+ mode change 100755 => 100644 procmon/procmon.c
+ mode change 100755 => 100644 procmon/procmonStates.c
+ mode change 100755 => 100644 ssh/Makefile.am
+ mode change 100755 => 100644 ssh/ssh.c
+ mode change 100755 => 100644 stations/Makefile.am
+ mode change 100755 => 100644 stations/Simulator/Makefile.am
+ mode change 100755 => 100644 stations/Simulator/simulator.c
+ mode change 100755 => 100644 stations/Simulator/simulator.h
+ mode change 100755 => 100644 stations/TE923/Makefile.am
+ mode change 100755 => 100644 stations/TE923/te923Interface.c
+ mode change 100755 => 100644 stations/TE923/te923Interface.h
+ mode change 100755 => 100644 stations/TE923/te923Protocol.c
+ mode change 100755 => 100644 stations/TE923/te923Protocol.h
+ mode change 100755 => 100644 stations/TWI/Makefile.am
+ mode change 100755 => 100644 stations/TWI/twiConfig.c
+ mode change 100755 => 100644 stations/TWI/twiInterface.c
+ mode change 100755 => 100644 stations/TWI/twiInterface.h
+ mode change 100755 => 100644 stations/TWI/twiProtocol.c
+ mode change 100755 => 100644 stations/TWI/twiProtocol.h
+ mode change 100755 => 100644 stations/VantagePro/Makefile.am
+ mode change 100755 => 100644 stations/VantagePro/dbfiles.c
+ mode change 100755 => 100644 stations/VantagePro/dbfiles.h
+ mode change 100755 => 100644 stations/VantagePro/vpconfig/Makefile.am
+ mode change 100755 => 100644 stations/VantagePro/vpconfig/vpconfig.c
+ mode change 100755 => 100644 stations/VantagePro/vpconfig/vpinstall.sh
+ mode change 100755 => 100644 stations/VantagePro/vproInterface.c
+ mode change 100755 => 100644 stations/VantagePro/vproStates.c
+ mode change 100755 => 100644 stations/Virtual/Makefile.am
+ mode change 100755 => 100644 stations/Virtual/virtualInterface.c
+ mode change 100755 => 100644 stations/Virtual/virtualInterface.h
+ mode change 100755 => 100644 stations/Virtual/virtualProtocol.c
+ mode change 100755 => 100644 stations/Virtual/virtualProtocol.h
+ mode change 100755 => 100644 stations/WH1080/Makefile.am
+ mode change 100755 => 100644 stations/WH1080/wh1080Interface.c
+ mode change 100755 => 100644 stations/WH1080/wh1080Interface.h
+ mode change 100755 => 100644 stations/WH1080/wh1080Protocol.c
+ mode change 100755 => 100644 stations/WH1080/wh1080Protocol.h
+ mode change 100755 => 100644 stations/WMR918/Makefile.am
+ mode change 100755 => 100644 stations/WMR918/wmr918Interface.c
+ mode change 100755 => 100644 stations/WMR918/wmr918Interface.h
+ mode change 100755 => 100644 stations/WMR918/wmr918protocol.c
+ mode change 100755 => 100644 stations/WMR918/wmr918protocol.h
+ mode change 100755 => 100644 stations/WMRUSB/Makefile.am
+ mode change 100755 => 100644 stations/WMRUSB/wmrusbinterface.c
+ mode change 100755 => 100644 stations/WMRUSB/wmrusbinterface.h
+ mode change 100755 => 100644 stations/WMRUSB/wmrusbprotocol.c
+ mode change 100755 => 100644 stations/WMRUSB/wmrusbprotocol.h
+ mode change 100755 => 100644 stations/WS-2300/Makefile.am
+ mode change 100755 => 100644 stations/WS-2300/ws2300Interface.c
+ mode change 100755 => 100644 stations/WS-2300/ws2300Interface.h
+ mode change 100755 => 100644 stations/WS-2300/ws2300protocol.c
+ mode change 100755 => 100644 stations/WS-2300/ws2300protocol.h
+ mode change 100755 => 100644 stations/WXT510/Makefile.am
+ mode change 100755 => 100644 stations/WXT510/nmea0183.c
+ mode change 100755 => 100644 stations/WXT510/nmea0183.h
+ mode change 100755 => 100644 stations/WXT510/wxt510Interface.c
+ mode change 100755 => 100644 stations/WXT510/wxt510Interface.h
+ mode change 100755 => 100644 stations/WXT510/wxt510config/Makefile.am
+ mode change 100755 => 100644 stations/WXT510/wxt510config/wxt510config.c
+ mode change 100755 => 100644 stations/common/computedData.c
+ mode change 100755 => 100644 stations/common/daemon.c
+ mode change 100755 => 100644 stations/common/daemon.h
+ mode change 100755 => 100644 stations/common/ethernet.c
+ mode change 100755 => 100644 stations/common/ethernet.h
+ mode change 100755 => 100644 stations/common/hidapi-linux.c
+ mode change 100755 => 100644 stations/common/hidapi-osx.c
+ mode change 100755 => 100644 stations/common/hidapi.h
+ mode change 100755 => 100644 stations/common/parser.c
+ mode change 100755 => 100644 stations/common/serial.c
+ mode change 100755 => 100644 stations/common/station.c
+ mode change 100755 => 100644 stations/common/station.h
+ mode change 100755 => 100644 stations/common/stormRain.c
+ mode change 100755 => 100644 stations/common/usbhid.c
+ mode change 100755 => 100644 utilities/Makefile.am
+ mode change 100755 => 100644 utilities/archive-be2le/Makefile.am
+ mode change 100755 => 100644 utilities/archive-be2le/arc_be2le.c
+ mode change 100755 => 100644 utilities/archive-le2be/Makefile.am
+ mode change 100755 => 100644 utilities/archive-le2be/arc_le2be.c
+ mode change 100755 => 100644 utilities/hilowcreate/Makefile.am
+ mode change 100755 => 100644 utilities/hilowcreate/hilowcreate.c
+ mode change 100755 => 100644 utilities/sqlite2wlk/Makefile.am
+ mode change 100755 => 100644 utilities/sqlite2wlk/sqlite2wlk.c
+ mode change 100755 => 100644 utilities/wlk2sqlite/Makefile.am
+ mode change 100755 => 100644 utilities/wlk2sqlite/wlk2sqlite.c
+ mode change 100755 => 100644 utilities/wvutilities.c
+ mode change 100755 => 100644 wview-Debian-Quick-Start.html
+ mode change 100755 => 100644 wview-Quick-Start-FreeBSD.html
+ mode change 100755 => 100644 wview-Quick-Start-MacOSX.html
+ mode change 100755 => 100644 wview-Quick-Start.html
+ mode change 100755 => 100644 wview-User-Manual.html
+ mode change 100755 => 100644 wviewconfig/Makefile.am
+ mode change 100755 => 100644 wviewmgmt/Makefile.am
+ mode change 100755 => 100644 wviewmgmt/imgs/black.png
+ mode change 100755 => 100644 wviewmgmt/imgs/blue.png
+ mode change 100755 => 100644 wviewmgmt/imgs/calendar.png
+ mode change 100755 => 100644 wviewmgmt/imgs/email.png
+ mode change 100755 => 100644 wviewmgmt/imgs/gray.png
+ mode change 100755 => 100644 wviewmgmt/imgs/green.png
+ mode change 100755 => 100644 wviewmgmt/imgs/phone.png
+ mode change 100755 => 100644 wviewmgmt/imgs/red.png
+ mode change 100755 => 100644 wviewmgmt/imgs/tip_small.png
+ mode change 100755 => 100644 wviewmgmt/imgs/yellow.png
+ mode change 100755 => 100644 wviewmgmt/login.php
+ mode change 100755 => 100644 wviewmgmt/logout.php
+ mode change 100755 => 100644 wviewmgmt/network_update.php
+ mode change 100755 => 100644 wviewmgmt/password_protect.php
+ mode change 100755 => 100644 wviewmgmt/password_update.php
+ mode change 100755 => 100644 wviewmgmt/preload_alarms.php
+ mode change 100755 => 100644 wviewmgmt/preload_calibration.php
+ mode change 100755 => 100644 wviewmgmt/preload_cwop.php
+ mode change 100755 => 100644 wviewmgmt/preload_file_generation.php
+ mode change 100755 => 100644 wviewmgmt/preload_ftp.php
+ mode change 100755 => 100644 wviewmgmt/preload_http_services.php
+ mode change 100755 => 100644 wviewmgmt/preload_services.php
+ mode change 100755 => 100644 wviewmgmt/preload_sql_export.php
+ mode change 100755 => 100644 wviewmgmt/preload_ssh.php
+ mode change 100755 => 100644 wviewmgmt/preload_station.php
+ mode change 100755 => 100644 wviewmgmt/preload_system_status.php
+ mode change 100755 => 100644 wviewmgmt/process_alarms.php
+ mode change 100755 => 100644 wviewmgmt/process_calibration.php
+ mode change 100755 => 100644 wviewmgmt/process_cwop.php
+ mode change 100755 => 100644 wviewmgmt/process_file_generation.php
+ mode change 100755 => 100644 wviewmgmt/process_ftp.php
+ mode change 100755 => 100644 wviewmgmt/process_http_services.php
+ mode change 100755 => 100644 wviewmgmt/process_services.php
+ mode change 100755 => 100644 wviewmgmt/process_sql_export.php
+ mode change 100755 => 100644 wviewmgmt/process_ssh.php
+ mode change 100755 => 100644 wviewmgmt/process_station.php
+ mode change 100755 => 100644 wviewmgmt/style.css
+ mode change 100755 => 100644 wviewmgmt/wview-100x100.png
+ mode change 100755 => 100644 wviewmgmt/wview-40x40.png
+ mode change 100755 => 100644 wviewmgmt/wview.ico
+ mode change 100755 => 100644 wviewmgmt/wview_control.php
+ mode change 100755 => 100644 wviewmgmt/wview_upgrade.php
+
+diff --git a/AUTHORS b/AUTHORS
+old mode 100755
+new mode 100644
+diff --git a/ChangeLog b/ChangeLog
+old mode 100755
+new mode 100644
+diff --git a/Makefile.am b/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/README b/README
+old mode 100755
+new mode 100644
+diff --git a/TODO b/TODO
+old mode 100755
+new mode 100644
+diff --git a/UPGRADE b/UPGRADE
+old mode 100755
+new mode 100644
+diff --git a/alarms/Makefile.am b/alarms/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/alarms/sample-datafeed-client/datafeedClient.c b/alarms/sample-datafeed-client/datafeedClient.c
+old mode 100755
+new mode 100644
+diff --git a/bin/img/Clouds.jpg b/bin/img/Clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/bin/img/above-clouds.jpg b/bin/img/above-clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/common/beaufort.h b/common/beaufort.h
+old mode 100755
+new mode 100644
+diff --git a/common/datadefs.h b/common/datadefs.h
+old mode 100755
+new mode 100644
+diff --git a/common/datafeed.c b/common/datafeed.c
+old mode 100755
+new mode 100644
+diff --git a/common/datafeed.h b/common/datafeed.h
+old mode 100755
+new mode 100644
+diff --git a/common/dbsqlite.c b/common/dbsqlite.c
+old mode 100755
+new mode 100644
+diff --git a/common/dbsqlite.h b/common/dbsqlite.h
+old mode 100755
+new mode 100644
+diff --git a/common/dbsqliteHiLow.c b/common/dbsqliteHiLow.c
+old mode 100755
+new mode 100644
+diff --git a/common/dbsqliteHistory.c b/common/dbsqliteHistory.c
+old mode 100755
+new mode 100644
+diff --git a/common/dbsqliteNOAA.c b/common/dbsqliteNOAA.c
+old mode 100755
+new mode 100644
+diff --git a/common/emailAlerts.c b/common/emailAlerts.c
+old mode 100755
+new mode 100644
+diff --git a/common/lunarCycle.c b/common/lunarCycle.c
+old mode 100755
+new mode 100644
+diff --git a/common/sensor.c b/common/sensor.c
+old mode 100755
+new mode 100644
+diff --git a/common/sensor.h b/common/sensor.h
+old mode 100755
+new mode 100644
+diff --git a/common/services.h b/common/services.h
+old mode 100755
+new mode 100644
+diff --git a/common/status.c b/common/status.c
+old mode 100755
+new mode 100644
+diff --git a/common/sysdefs.h b/common/sysdefs.h
+old mode 100755
+new mode 100644
+diff --git a/common/windAverage.c b/common/windAverage.c
+old mode 100755
+new mode 100644
+diff --git a/common/wvutils.c b/common/wvutils.c
+old mode 100755
+new mode 100644
+diff --git a/configure.in b/configure.in
+old mode 100755
+new mode 100644
+diff --git a/cwop/Makefile.am b/cwop/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/cwop/cwop.c b/cwop/cwop.c
+old mode 100755
+new mode 100644
+diff --git a/dbexport/Makefile.am b/dbexport/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/Debian/Makefile.am b/examples/Debian/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/FedoraCore/Makefile.am b/examples/FedoraCore/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/FedoraCore/wview.sh b/examples/FedoraCore/wview.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/FreeBSD/Makefile.am b/examples/FreeBSD/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/FreeBSD/wview.sh b/examples/FreeBSD/wview.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/MacOSX/wview/Makefile.am b/examples/MacOSX/wview/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/MacOSX/wview/wview.sh b/examples/MacOSX/wview/wview.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/Makefile.am b/examples/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/NSLU2/Makefile.am b/examples/NSLU2/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/NSLU2/wview.sh b/examples/NSLU2/wview.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/SuSE/Makefile.am b/examples/SuSE/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/examples/SuSE/wview.sh b/examples/SuSE/wview.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/alarms/outtempMaxEmail.sh b/examples/alarms/outtempMaxEmail.sh
+old mode 100644
+new mode 100755
+diff --git a/examples/html/chrome/plus/images-metric.conf b/examples/html/chrome/plus/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/plus/images.conf b/examples/html/chrome/plus/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/standard/images-metric.conf b/examples/html/chrome/standard/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/standard/images.conf b/examples/html/chrome/standard/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/Clouds-blue.jpg b/examples/html/chrome/static/Clouds-blue.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/Clouds.jpg b/examples/html/chrome/static/Clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/above-clouds.jpg b/examples/html/chrome/static/above-clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-cloudy.gif b/examples/html/chrome/static/fc-icon-cloudy.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-partlycloudy.gif b/examples/html/chrome/static/fc-icon-partlycloudy.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-partlycloudyandrain.gif b/examples/html/chrome/static/fc-icon-partlycloudyandrain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-partlycloudyandsnow.gif b/examples/html/chrome/static/fc-icon-partlycloudyandsnow.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-rain.gif b/examples/html/chrome/static/fc-icon-rain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-snow.gif b/examples/html/chrome/static/fc-icon-snow.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-snowandrain.gif b/examples/html/chrome/static/fc-icon-snowandrain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/chrome/static/fc-icon-sunny.gif b/examples/html/chrome/static/fc-icon-sunny.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/plus/images-metric.conf b/examples/html/classic/plus/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/plus/images.conf b/examples/html/classic/plus/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/standard/images-metric.conf b/examples/html/classic/standard/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/standard/images.conf b/examples/html/classic/standard/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/Clouds-blue.jpg b/examples/html/classic/static/Clouds-blue.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/Clouds.jpg b/examples/html/classic/static/Clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/above-clouds.jpg b/examples/html/classic/static/above-clouds.jpg
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-cloudy.gif b/examples/html/classic/static/fc-icon-cloudy.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-partlycloudy.gif b/examples/html/classic/static/fc-icon-partlycloudy.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-partlycloudyandrain.gif b/examples/html/classic/static/fc-icon-partlycloudyandrain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-partlycloudyandsnow.gif b/examples/html/classic/static/fc-icon-partlycloudyandsnow.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-rain.gif b/examples/html/classic/static/fc-icon-rain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-snow.gif b/examples/html/classic/static/fc-icon-snow.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-snowandrain.gif b/examples/html/classic/static/fc-icon-snowandrain.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/classic/static/fc-icon-sunny.gif b/examples/html/classic/static/fc-icon-sunny.gif
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/plus/images-metric.conf b/examples/html/exfoliation/plus/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/plus/images.conf b/examples/html/exfoliation/plus/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/plus/post-generate.sh b/examples/html/exfoliation/plus/post-generate.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/standard/images-metric.conf b/examples/html/exfoliation/standard/images-metric.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/standard/images.conf b/examples/html/exfoliation/standard/images.conf
+old mode 100755
+new mode 100644
+diff --git a/examples/html/exfoliation/standard/post-generate.sh b/examples/html/exfoliation/standard/post-generate.sh
+old mode 100755
+new mode 100644
+diff --git a/examples/html/parameterlist.txt b/examples/html/parameterlist.txt
+old mode 100755
+new mode 100644
+diff --git a/examples/scripts/rainInLastWeek.sh b/examples/scripts/rainInLastWeek.sh
+old mode 100644
+new mode 100755
+diff --git a/examples/scripts/wview-ftp.sh b/examples/scripts/wview-ftp.sh
+old mode 100644
+new mode 100755
+diff --git a/ftp/Makefile.am b/ftp/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/ftp/ftp.c b/ftp/ftp.c
+old mode 100755
+new mode 100644
+diff --git a/ftp/ftpUtils.h b/ftp/ftpUtils.h
+old mode 100755
+new mode 100644
+diff --git a/ftp/wviewftp.debug.sh b/ftp/wviewftp.debug.sh
+old mode 100644
+new mode 100755
+diff --git a/htmlgenerator/Makefile.am b/htmlgenerator/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/glchart.c b/htmlgenerator/glchart.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/html.c b/htmlgenerator/html.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/html.h b/htmlgenerator/html.h
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/htmlGenerate.c b/htmlgenerator/htmlGenerate.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/htmlGenerate.h b/htmlgenerator/htmlGenerate.h
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/htmlMgr.c b/htmlgenerator/htmlMgr.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/htmlMgr.h b/htmlgenerator/htmlMgr.h
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/htmlStates.c b/htmlgenerator/htmlStates.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/images-user.c b/htmlgenerator/images-user.c
+old mode 100755
+new mode 100644
+diff --git a/htmlgenerator/images.c b/htmlgenerator/images.c
+old mode 100755
+new mode 100644
+diff --git a/http/Makefile.am b/http/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/http/http.c b/http/http.c
+old mode 100755
+new mode 100644
+diff --git a/procmon/Makefile.am b/procmon/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/procmon/procmon.c b/procmon/procmon.c
+old mode 100755
+new mode 100644
+diff --git a/procmon/procmonStates.c b/procmon/procmonStates.c
+old mode 100755
+new mode 100644
+diff --git a/ssh/Makefile.am b/ssh/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/ssh/ssh.c b/ssh/ssh.c
+old mode 100755
+new mode 100644
+diff --git a/stations/Makefile.am b/stations/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/Simulator/Makefile.am b/stations/Simulator/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/Simulator/simulator.c b/stations/Simulator/simulator.c
+old mode 100755
+new mode 100644
+diff --git a/stations/Simulator/simulator.h b/stations/Simulator/simulator.h
+old mode 100755
+new mode 100644
+diff --git a/stations/TE923/Makefile.am b/stations/TE923/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/TE923/te923Interface.c b/stations/TE923/te923Interface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/TE923/te923Interface.h b/stations/TE923/te923Interface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/TE923/te923Protocol.c b/stations/TE923/te923Protocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/TE923/te923Protocol.h b/stations/TE923/te923Protocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/Makefile.am b/stations/TWI/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/twiConfig.c b/stations/TWI/twiConfig.c
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/twiInterface.c b/stations/TWI/twiInterface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/twiInterface.h b/stations/TWI/twiInterface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/twiProtocol.c b/stations/TWI/twiProtocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/TWI/twiProtocol.h b/stations/TWI/twiProtocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/Makefile.am b/stations/VantagePro/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/dbfiles.c b/stations/VantagePro/dbfiles.c
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/dbfiles.h b/stations/VantagePro/dbfiles.h
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/vpconfig/Makefile.am b/stations/VantagePro/vpconfig/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/vpconfig/vpconfig.c b/stations/VantagePro/vpconfig/vpconfig.c
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/vpconfig/vpinstall.sh b/stations/VantagePro/vpconfig/vpinstall.sh
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/vproInterface.c b/stations/VantagePro/vproInterface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/VantagePro/vproStates.c b/stations/VantagePro/vproStates.c
+old mode 100755
+new mode 100644
+diff --git a/stations/Virtual/Makefile.am b/stations/Virtual/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/Virtual/virtualInterface.c b/stations/Virtual/virtualInterface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/Virtual/virtualInterface.h b/stations/Virtual/virtualInterface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/Virtual/virtualProtocol.c b/stations/Virtual/virtualProtocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/Virtual/virtualProtocol.h b/stations/Virtual/virtualProtocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WH1080/Makefile.am b/stations/WH1080/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WH1080/wh1080Interface.c b/stations/WH1080/wh1080Interface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WH1080/wh1080Interface.h b/stations/WH1080/wh1080Interface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WH1080/wh1080Protocol.c b/stations/WH1080/wh1080Protocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WH1080/wh1080Protocol.h b/stations/WH1080/wh1080Protocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WMR918/Makefile.am b/stations/WMR918/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WMR918/wmr918Interface.c b/stations/WMR918/wmr918Interface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WMR918/wmr918Interface.h b/stations/WMR918/wmr918Interface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WMR918/wmr918protocol.c b/stations/WMR918/wmr918protocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WMR918/wmr918protocol.h b/stations/WMR918/wmr918protocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WMRUSB/Makefile.am b/stations/WMRUSB/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WMRUSB/wmrusbinterface.c b/stations/WMRUSB/wmrusbinterface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WMRUSB/wmrusbinterface.h b/stations/WMRUSB/wmrusbinterface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WMRUSB/wmrusbprotocol.c b/stations/WMRUSB/wmrusbprotocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WMRUSB/wmrusbprotocol.h b/stations/WMRUSB/wmrusbprotocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WS-2300/Makefile.am b/stations/WS-2300/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WS-2300/ws2300Interface.c b/stations/WS-2300/ws2300Interface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WS-2300/ws2300Interface.h b/stations/WS-2300/ws2300Interface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WS-2300/ws2300protocol.c b/stations/WS-2300/ws2300protocol.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WS-2300/ws2300protocol.h b/stations/WS-2300/ws2300protocol.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/Makefile.am b/stations/WXT510/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/nmea0183.c b/stations/WXT510/nmea0183.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/nmea0183.h b/stations/WXT510/nmea0183.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/wxt510Interface.c b/stations/WXT510/wxt510Interface.c
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/wxt510Interface.h b/stations/WXT510/wxt510Interface.h
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/wxt510config/Makefile.am b/stations/WXT510/wxt510config/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/stations/WXT510/wxt510config/wxt510config.c b/stations/WXT510/wxt510config/wxt510config.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/computedData.c b/stations/common/computedData.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/daemon.c b/stations/common/daemon.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/daemon.h b/stations/common/daemon.h
+old mode 100755
+new mode 100644
+diff --git a/stations/common/ethernet.c b/stations/common/ethernet.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/ethernet.h b/stations/common/ethernet.h
+old mode 100755
+new mode 100644
+diff --git a/stations/common/hidapi-linux.c b/stations/common/hidapi-linux.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/hidapi-osx.c b/stations/common/hidapi-osx.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/hidapi.h b/stations/common/hidapi.h
+old mode 100755
+new mode 100644
+diff --git a/stations/common/parser.c b/stations/common/parser.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/serial.c b/stations/common/serial.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/station.c b/stations/common/station.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/station.h b/stations/common/station.h
+old mode 100755
+new mode 100644
+diff --git a/stations/common/stormRain.c b/stations/common/stormRain.c
+old mode 100755
+new mode 100644
+diff --git a/stations/common/usbhid.c b/stations/common/usbhid.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/Makefile.am b/utilities/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/archive-be2le/Makefile.am b/utilities/archive-be2le/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/archive-be2le/arc_be2le.c b/utilities/archive-be2le/arc_be2le.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/archive-le2be/Makefile.am b/utilities/archive-le2be/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/archive-le2be/arc_le2be.c b/utilities/archive-le2be/arc_le2be.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/hilowcreate/Makefile.am b/utilities/hilowcreate/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/hilowcreate/hilowcreate.c b/utilities/hilowcreate/hilowcreate.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/sqlite2wlk/Makefile.am b/utilities/sqlite2wlk/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/sqlite2wlk/sqlite2wlk.c b/utilities/sqlite2wlk/sqlite2wlk.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/wlk2sqlite/Makefile.am b/utilities/wlk2sqlite/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/utilities/wlk2sqlite/wlk2sqlite.c b/utilities/wlk2sqlite/wlk2sqlite.c
+old mode 100755
+new mode 100644
+diff --git a/utilities/wvutilities.c b/utilities/wvutilities.c
+old mode 100755
+new mode 100644
+diff --git a/wview-Debian-Quick-Start.html b/wview-Debian-Quick-Start.html
+old mode 100755
+new mode 100644
+diff --git a/wview-Quick-Start-FreeBSD.html b/wview-Quick-Start-FreeBSD.html
+old mode 100755
+new mode 100644
+diff --git a/wview-Quick-Start-MacOSX.html b/wview-Quick-Start-MacOSX.html
+old mode 100755
+new mode 100644
+diff --git a/wview-Quick-Start.html b/wview-Quick-Start.html
+old mode 100755
+new mode 100644
+diff --git a/wview-User-Manual.html b/wview-User-Manual.html
+old mode 100755
+new mode 100644
+diff --git a/wviewconfig/Makefile.am b/wviewconfig/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/Makefile.am b/wviewmgmt/Makefile.am
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/black.png b/wviewmgmt/imgs/black.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/blue.png b/wviewmgmt/imgs/blue.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/calendar.png b/wviewmgmt/imgs/calendar.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/email.png b/wviewmgmt/imgs/email.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/gray.png b/wviewmgmt/imgs/gray.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/green.png b/wviewmgmt/imgs/green.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/phone.png b/wviewmgmt/imgs/phone.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/red.png b/wviewmgmt/imgs/red.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/tip_small.png b/wviewmgmt/imgs/tip_small.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/imgs/yellow.png b/wviewmgmt/imgs/yellow.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/login.php b/wviewmgmt/login.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/logout.php b/wviewmgmt/logout.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/network_update.php b/wviewmgmt/network_update.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/password_protect.php b/wviewmgmt/password_protect.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/password_update.php b/wviewmgmt/password_update.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_alarms.php b/wviewmgmt/preload_alarms.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_calibration.php b/wviewmgmt/preload_calibration.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_cwop.php b/wviewmgmt/preload_cwop.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_file_generation.php b/wviewmgmt/preload_file_generation.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_ftp.php b/wviewmgmt/preload_ftp.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_http_services.php b/wviewmgmt/preload_http_services.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_services.php b/wviewmgmt/preload_services.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_sql_export.php b/wviewmgmt/preload_sql_export.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_ssh.php b/wviewmgmt/preload_ssh.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_station.php b/wviewmgmt/preload_station.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/preload_system_status.php b/wviewmgmt/preload_system_status.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_alarms.php b/wviewmgmt/process_alarms.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_calibration.php b/wviewmgmt/process_calibration.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_cwop.php b/wviewmgmt/process_cwop.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_file_generation.php b/wviewmgmt/process_file_generation.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_ftp.php b/wviewmgmt/process_ftp.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_http_services.php b/wviewmgmt/process_http_services.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_services.php b/wviewmgmt/process_services.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_sql_export.php b/wviewmgmt/process_sql_export.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_ssh.php b/wviewmgmt/process_ssh.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/process_station.php b/wviewmgmt/process_station.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/style.css b/wviewmgmt/style.css
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/wview-100x100.png b/wviewmgmt/wview-100x100.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/wview-40x40.png b/wviewmgmt/wview-40x40.png
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/wview.ico b/wviewmgmt/wview.ico
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/wview_control.php b/wviewmgmt/wview_control.php
+old mode 100755
+new mode 100644
+diff --git a/wviewmgmt/wview_upgrade.php b/wviewmgmt/wview_upgrade.php
+old mode 100755
+new mode 100644

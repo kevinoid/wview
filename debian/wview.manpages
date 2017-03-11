@@ -16,8 +16,13 @@ debian/wview-pgsql-export.1
 debian/wviewcleardata.1
 debian/wviewconfig.1
 debian/wviewd_sim.1
+debian/wviewd_te923.1
+debian/wviewd_twi.1
+debian/wviewd_virtual.1
 debian/wviewd_vpro.1
+debian/wviewd_wh1080.1
 debian/wviewd_wmr918.1
+debian/wviewd_wmrusb.1
 debian/wviewd_ws2300.1
 debian/wviewd_wxt510.1
 debian/wviewftpd.1

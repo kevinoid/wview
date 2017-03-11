@@ -19,19 +19,20 @@
 vpconfig \- wview utility program to configure an attached Vantage Pro weather station 
 .SH SYNOPSIS
 .B vpconfig
-.RI station_device command [cmnd_args]
-.br
+.I station_device command [cmnd_args]
 .SH DESCRIPTION
 This manual page describes the use of
 .B vpconfig
 .
 Configure an attached Vantage Pro weather station (or display current configuration).
-.BR    station_device         - serial device the VP console is connected to:
+.P
+station_device         - serial device the VP console is connected to:
                                 FreeBSD:   /dev/cuaa0 - /dev/cuaa4
                                 Linux:     /dev/ttyS0 - /dev/ttyS4
                                 Linux USB: /dev/ttyUSB0
                                 Ethernet:  host:port
-.BR    command                - command to execute, one of:
+.P
+command                - command to execute, one of:
                                 show
                                 - retrieve and display VP console config
                                 cleararchive
@@ -67,10 +68,8 @@ Configure an attached Vantage Pro weather station (or display current configurat
                                 - set the size of the anenometer cup (1 is standard)
 .SH OPTIONS
 station_device and command are mandatory.
-.TP
 .SH SEE ALSO
-.BR /usr/share/doc/wview/wview-User-Manual.html
-.br
+/usr/share/doc/wview/wview-User-Manual.html
 .SH AUTHOR
 vpconfig was written by Mark Teel.
 .PP

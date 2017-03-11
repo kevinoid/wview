@@ -1,3 +1,34 @@
+wview (5.21.7-1local1) UNRELEASED; urgency=low
+
+  [ Kevin Locke ]
+  * Non-maintainer upload
+  * Run wview daemons as wview user created in postinst
+  * Install Apache configuration for wview, avoid changing ServerRoot dir
+  * Remove unnecessary dependencies on libusb
+  * Add debian/watch file for uscan(1)
+  * Recommends on apache2 or httpd
+  * Remove LD_LIBRARY_PATH manipulation from init.d script
+  * Require $remote_fs in init.d script
+  * Use /bin/sh for init.d script
+  * Register user manual with doc-base
+  * Unconditionally install rsyslog config
+  * Improve logrotate behavior to match other rsyslog rotation behavior
+  * Convert debian/copyright to machine-readable format
+  * Switch to debhelper 10 with hardening=+all
+  * Update Standards-Version to 3.9.8
+  * Use source format 3.0 (quilt)
+  * Add missing station manpages and improve other manpages
+  * WMR918: Add init timeout of 60 seconds
+  * WMR918: reopen station device if it disappears
+  * Set correct execute permission on files
+  * Don't install functions.php in bin
+
+  [ Jon Barber ]
+  * Avoid unnecessary linking of external libraries.
+  * Remove unused dependencies.
+
+ -- Kevin Locke <kevin@kevinlocke.name>  Fri, 10 Mar 2017 21:16:13 -0700
+
 wview (5.21.7-1) unstable; urgency=low
 
   * New upstream release

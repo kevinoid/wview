@@ -117,8 +117,6 @@ case "$1" in
             echo "#> sudo visudo"
             echo "(Make sure the line [%sudo ALL=NOPASSWD: ALL] is at the bottom of the /etc/sudoers file)"
             echo ""
-#           Assuming php5-sqlite was just installed, restart apache2 so it will load php5-sqlite module:
-            /usr/sbin/apache2ctl restart
         else
             echo "==> /etc/wview/wview-conf.sdb already exists - skipping default configuration installation"
             cp -fp /usr/share/wview/etc/wview/wview-conf-update.sql /etc/wview

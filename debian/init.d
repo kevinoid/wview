@@ -3,6 +3,7 @@
 CONF_DIRECTORY=/etc/wview
 RUN_DIRECTORY=/var/lib/wview
 WVIEW_INSTALL_DIR=/usr/bin
+WVIEW_STATUS_DIR=/var/run/wview
 ### BEGIN INIT INFO
 # Provides:          wview
 # Required-Start:    $remote_fs $network $time $syslog
@@ -84,9 +85,15 @@ cleanup_pid_files() {
     done;
 }
 
+create_status_dir() {
+    mkdir -p "$WVIEW_STATUS_DIR"
+    chown "$WVIEW_USER" "$WVIEW_STATUS_DIR"
+}
+
 case "$1" in
   start)
     cleanup_pid_files
+    create_status_dir
     wait_for_time_set
 
 	echo "Starting wview daemons:"

@@ -33,6 +33,7 @@ case "$1" in
             mkdir -p /var/lib/wview/img/NOAA
             mkdir -p /var/lib/wview/archive
             cp -fp /usr/share/wview/var/wview/img/*.* /var/lib/wview/img
+            cp -fp /usr/share/wview/etc/wview/html/chrome/static/*.* /var/lib/wview/img
             cp -fp /usr/share/wview/var/wview/archive/* /var/lib/wview/archive
             sqlite3 /var/lib/wview/archive/wview-archive.sdb '.read /var/lib/wview/archive/wview-archive.sql'
             chown -R wview:wview /var/lib/wview
@@ -66,7 +67,6 @@ case "$1" in
             cp -fp /usr/share/wview/etc/wview/html/*.* /etc/wview/html
             cp -fp /usr/share/wview/etc/wview/html/chrome/plus/*.* /etc/wview/html/chrome/plus
             cp -fp /usr/share/wview/etc/wview/html/chrome/static/*.* /etc/wview/html/chrome/static
-            cp -fp /usr/share/wview/etc/wview/html/chrome/static/*.* /var/lib/wview/img
             cp -fp /usr/share/wview/etc/wview/html/chrome/standard/*.* /etc/wview/html/chrome/standard
             cp -fp /usr/share/wview/etc/wview/html/classic/plus/*.* /etc/wview/html/classic/plus
             cp -fp /usr/share/wview/etc/wview/html/classic/static/*.* /etc/wview/html/classic/static

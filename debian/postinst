@@ -86,11 +86,8 @@ case "$1" in
             echo ""
             echo "If you want start/stop control of wview from the Management Web Site"
             echo "(and you are comfortable giving the http server user account sudo privileges):"
-            echo "Add the http user to the sudo group:"
-            echo "#> sudo adduser www-data sudo"
-            echo "Set the sudo group to no password required privileges in /etc/sudoers:"
-            echo "#> sudo visudo"
-            echo "(Make sure the line [%sudo ALL=NOPASSWD: ALL] is at the bottom of the /etc/sudoers file)"
+            echo "Grant the www-data user permission to control wview:"
+            echo "# cp /usr/share/doc/wview/examples/wviewmgmt.sudoers /etc/sudoers.d/wviewmgmt"
             echo ""
         else
             echo "==> /etc/wview/wview-conf.sdb already exists - skipping default configuration installation"

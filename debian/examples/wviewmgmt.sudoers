@@ -1,0 +1,10 @@
+# sudoers(5) configuration file for wviewmgmt
+# Install by copying to /etc/sudoers.d/wviewmgmt (using `visudo -f` to be safe)
+
+# Allow stopping/starting/restarting wview remotely via PHP:
+#
+# www-data on any host can run, as root, without auth, with clean env,
+# /etc/init.d/wview with any arguments
+www-data	ALL = (root) NOPASSWD: NOSETENV: /etc/init.d/wview
+
+# vi: set ft=sudoers :

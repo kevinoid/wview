@@ -3,6 +3,7 @@ Debian Packaging TODO List
 
 - [ ] Get OpenSSL GPL exception from upstream or build against GnuTLS.
 - [ ] Fix insecure temporary file usage in dbexport scripts.
+- [ ] Either replace gawk with awk or depend on gawk.
 - [ ] Don't include `wviewmgmt/functions.php.sh`, `wviewmgmt/Makefile.*` in deb
       The problem is cp -r wviewmgmt in root Makefile.am.
 - [ ] Avoid duplicating files between `/etc` and `/usr/share/wview/etc`

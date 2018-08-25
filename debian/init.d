@@ -71,18 +71,24 @@ wait_for_time_set() {
 }
 
 cleanup_pid_files() {
-    for pidfile in `ls -1 $RUN_DIRECTORY/*.pid 2>/dev/null`; do
-        testpid=`cat $pidfile`;
-        if [ -n "$testpid" ]; then
-            result=`ps --no-headers -o pid $testpid`;
-        else
-            result=""
-        fi;
-        if [ -z "$result" ]; then
-            echo "Removing stale PID file $pidfile";
-            rm -f $pidfile;
-        fi;
-    done;
+    for pidfile in "$RUN_DIRECTORY"/*.pid ; do
+        [ -f "$pidfile" ] || continue       # Skip non-files (e.g. unexpanded)
+        testpid=$(cat "$pidfile")
+        pidcomm=$(ps -o comm= -p "$testpid" 2>/dev/null)
+        pidname=${pidfile%.pid}
+        pidname=${pidname##*/}
+        case "$pidcomm" in
+            "$pidname"*)
+                # process exists and command starts with PID file name
+                # PID file is valid, leave it alone
+                ;;
+            *)
+                # PID does not exist or command doesn't start with PID file name
+                echo "Removing stale PID file $pidfile"
+                rm -f "$pidfile"
+                ;;
+        esac
+    done
 }
 
 create_status_dir() {
